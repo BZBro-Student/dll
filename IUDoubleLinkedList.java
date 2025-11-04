@@ -1,3 +1,4 @@
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -192,7 +193,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
     }
 
     @Override
-    //TODO: optimize index navigation
+    // TODO: optimize index navigation
     public T remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
@@ -214,10 +215,10 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                     currNode.setPrevNode(null);
                     tempPrevNode.setNextNode(tempNextNode);
                     tempNextNode.setPrevNode(tempPrevNode);
-                                size--;
-            modCount++;
+                    size--;
+                    modCount++;
                 }
-                if (returnValue != null){
+                if (returnValue != null) {
                     break;
                 }
                 currNode = currNode.getNextNode();
@@ -228,7 +229,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
     }
 
     @Override
-    //TODO: optimize index navigation
+    // TODO: optimize index navigation
     public void set(int index, T element) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
@@ -241,8 +242,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         }
         currNode.setElement(element);
         modCount++;
-    }        
-
+    }
 
     @Override
     // TODO: optimize by checking if index is in first half or second half of list
@@ -314,6 +314,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
     public int size() {
         return size;
     }
+
     /**
      * Contains the constructor and methods for a iterator meant to be used on a
      * double linked list. Implements
@@ -321,30 +322,62 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
      * 
      * @Author Broden
      */
-    private class IUSDoubleLinkedListIterator implements Iterator<T> {
+    private class IUDoubleLinkedListIterator implements Iterator<T> {
+        private Node<T> currLocation;
+        private Node<T> lastReturnedNode;
+        private Node<T> nodeBeforeRemoved;
+        private int callsToRemove;
+        private int expectedModCount;
+
+        public IUDoubleLinkedListIterator() {
+            // currLocation indicates the location we are pointing towards next
+            currLocation = head;
+            lastReturnedNode = null;
+            callsToRemove = 1;
+            expectedModCount = modCount;
+        }
+        /**
+         * Checks to see if the array has changed using outside methods,
+         * to help enforce fail fast behavior
+         */
+        private void hasChanged() {
+            if (expectedModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+        }
 
         @Override
         public boolean hasNext() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'hasNext'");
+            hasChanged();
+            return currLocation != null;
         }
 
         @Override
         public T next() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'next'");
+            T returnValue = null;
+            if (hasNext()) {
+                currLocation = currLocation.getNextNode();
+                returnValue = currLocation.getElement();
+                callsToRemove = 0;
+            } else {
+                throw new NoSuchElementException();
+            }
+            return returnValue;
         }
+
         @Override
         public void remove() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'remove'");
+            hasChanged();
+            if (callsToRemove >= 1) {
+                throw new IllegalStateException();
+            }
         }
 
     }
+
     @Override
     public Iterator<T> iterator() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+        return new IUDoubleLinkedListIterator();
     }
 
     @Override
