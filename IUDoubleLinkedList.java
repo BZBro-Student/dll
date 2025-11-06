@@ -138,7 +138,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        T returnValue = null;
+        T returnValue = tail.getElement();
         if (size == 1) {
             returnValue = head.getElement();
             head = null;
@@ -336,94 +336,15 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         return arrayStringBuilder.toString();
     }
 
-    /**
-     * Contains the constructor and methods for a iterator meant to be used on a
-     * double linked list. Implements
-     * the Iterator interface for type T.
-     * 
-     * @Author Broden
-     */
-    private class IUDoubleLinkedListIterator implements Iterator<T> {
-        private Node<T> currLocation;
-        private Node<T> lastReturnedNode;
-        private int callsToRemove;
-        private int expectedModCount;
-
-        public IUDoubleLinkedListIterator() {
-            // currLocation indicates the location we are pointing towards next
-            currLocation = head;
-            lastReturnedNode = null;
-            callsToRemove = 1;
-            expectedModCount = modCount;
-        }
-
-        /**
-         * Checks to see if the array has changed using outside methods,
-         * to help enforce fail fast behavior
-         */
-        private void hasChanged() {
-            if (expectedModCount != modCount) {
-                throw new ConcurrentModificationException();
-            }
-        }
-
-        @Override
-        public boolean hasNext() {
-            hasChanged();
-            return currLocation != null;
-        }
-
-        @Override
-        public T next() {
-            T returnValue = null;
-            if (hasNext()) {
-                lastReturnedNode = currLocation;
-                returnValue = currLocation.getElement();
-                currLocation = currLocation.getNextNode();
-                callsToRemove = 0;
-            } else {
-                throw new NoSuchElementException();
-            }
-            return returnValue;
-        }
-
-        @Override
-        public void remove() {
-            hasChanged();
-            if (callsToRemove >= 1) {
-                throw new IllegalStateException();
-            }
-            Node<T> tempPrevNode = lastReturnedNode.getPrevNode();
-            Node<T> tempNextNode = lastReturnedNode.getNextNode();
-            if (tempPrevNode == null) {
-                head = tempNextNode;
-                if (head != null) {
-                    head.setPrevNode(null);
-                }
-            } else {
-                tempPrevNode.setNextNode(tempNextNode);
-            }
-            if (tempNextNode == null) {
-                tail = tempPrevNode;
-                if (tail != null) {
-                    tail.setNextNode(null);
-                }
-            } else {
-                tempNextNode.setPrevNode(tempPrevNode);
-            }
-            size--;
-            modCount++;
-            expectedModCount++;
-            callsToRemove++;
-        }
-
-    }
-
     @Override
     public Iterator<T> iterator() {
-        return new IUDoubleLinkedListIterator();
+        return new IUDoubleLinkedListListIterator();
     }
-
+    /**
+     * Private inner class containing all of the functionality of a ListIterator compatible with
+     * a double linked list. This class also provides functionality for our basic iterator.
+     * 
+     */
     private class IUDoubleLinkedListListIterator implements ListIterator<T> {
         private Node<T> currLocation;
         private Node<T> lastReturnedNode;
