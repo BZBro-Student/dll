@@ -194,6 +194,8 @@ public class ListTester {
 		testTwoElementList(A_add1B_AB, "A_add1B_AB", LIST_AB, STRING_AB);
 		//1-element to changed 1-element via set()
 		testSingleElementList(A_set0B_B, "A_set0B_B", LIST_B, STRING_B);
+		// testSingleElementList(A_ListIterSetB_B, "A_ListIterSetB_B", LIST_B, STRING_B);
+		// testSingleElementList(A_ListIterSetBAfterPrev_B, "A_ListIterSetBAfterPrev_B", LIST_B, STRING_B);
 		//2-element to 1-element
 		// testSingleElementList(AB_ListIterRemove_B, "AB_ListIterRemove_B", LIST_B, STRING_B);
 		// testSingleElementList(AB_ListIterRemove_A, "AB_ListIterRemove_A", LIST_A, STRING_A);
@@ -206,6 +208,11 @@ public class ListTester {
 		testSingleElementList(AB_remove0_B, "AB_remove0_B", LIST_B, STRING_A);
 		testSingleElementList(AB_remove1_A, "AB_remove1_A", LIST_A, STRING_A);
 		//2-element to 3-element
+		//testThreeElementList(AB_ListIterAddC_CAB, "AB_ListIterAddC_CAB", LIST_CAB, STRING_CAB);
+		//testThreeElementList(AB_ListIterAddC_ACB, "AB_ListIterAddC_ACB", LIST_ACB, STRING_ACB);
+		//testThreeElementList(AB_ListIterAddC_ABC, "AB_ListIterAddC_ABC", LIST_ABC, STRING_ABC);
+		//testThreeElementList(AB_ListIterAddCAfterPrev_CAB, "AB_ListIterAddCAfterPrev_CAB", LIST_CAB, STRING_CAB);
+		//testThreeElementList(AB_ListIterAddCAfterPrev_ACB, "AB_ListIterAddCAfterPrev_ACB", LIST_ACB, STRING_ACB);
 		testThreeElementList(AB_addToFrontC_CAB, "AB_addToFrontC_CAB", LIST_CAB, STRING_CAB);
 		testThreeElementList(AB_addToRear_ABC, "AB_addToRear_ABC", LIST_ABC, STRING_ABC);
 		testThreeElementList(AB_addAfterCA_ACB, "AB_addAfterCA_ACB", LIST_ACB, STRING_ACB);
@@ -216,6 +223,10 @@ public class ListTester {
 		testThreeElementList(AB_add2C_ABC,"AB_add2C_ABC", LIST_ABC, STRING_ABC);
 		//testThreeElementList
 		//2-element to changed 2-element via set()
+		// testTwoElementList(AB_ListIterSetC_CB, "AB_ListIterSetC_CB", LIST_CB, STRING_CB);
+		// testTwoElementList(AB_ListIterSetC_AC, "AB_ListIterSetC_AC", LIST_AC, STRING_AC);
+		// testTwoElementList(AB_ListIterSetCAfterPrev_CB, "AB_ListIterSetCAfterPrev_CB", LIST_CB, STRING_CB);
+		// testTwoElementList(AB_ListIterSetCAfterPrev_B_AC, "AB_ListIterSetCAfterPrev_B_AC", LIST_AC, STRING_AC);
 		testTwoElementList(AB_set0C_CB, "AB_set0C_CB", LIST_CB, STRING_CB);
 		testTwoElementList(AB_set1C_AC, "AB_set1C_AC", LIST_AC, STRING_AC);
 		//3-element to 2-element
@@ -234,6 +245,12 @@ public class ListTester {
 		testTwoElementList(ABC_remove1_AC, "ABC_remove1_AC", LIST_AC, STRING_AC);
 		testTwoElementList(ABC_remove2_AB, "ABC_remove2_AB", LIST_AB, STRING_AB);
 		//3-element to changed 3-element via set()
+		//testThreeElementList(ABC_ListIterSetDAfterPrev_ABD, "ABC_ListIterSetDAfterPrev_ABD", LIST_ABD, STRING_ABD);
+		//testThreeElementList(ABC_ListIterSetDAfterPrev_ADC, "ABC_ListIterSetDAfterPrev_ADC", LIST_ADC, STRING_ADC);
+		//testThreeElementList(ABC_ListIterSetDAfterPrev_DBC, "ABC_ListIterSetDAfterPrev_DBC", LIST_DBC, STRING_DBC);
+		//testThreeElementList(ABC_ListIterSetD_ABD, "ABC_ListIterSetD_ABD", LIST_ABD, STRING_ABD);
+		//testThreeElementList(ABC_ListIterSetD_ADC, "ABC_ListIterSetD_ADC", LIST_ADC, STRING_ADC);
+		//testThreeElementList(ABC_ListIterSetD_DBC, "ABC_ListIterSetD_DBC", LIST_DBC, STRING_DBC);
 		testThreeElementList(ABC_set0D_DBC, "ABC_set0D_DBC", LIST_DBC, STRING_DBC);
 		testThreeElementList(ABC_set1D_ADC, "ABC_set1D_ADC", LIST_ADC, STRING_ADC);
 		testThreeElementList(ABC_set2D_ABD, "ABC_set2D_ABD", LIST_ABD, STRING_ABD);
