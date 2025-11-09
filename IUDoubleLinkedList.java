@@ -11,6 +11,10 @@ import java.util.NoSuchElementException;
  * @author Broden
  */
 public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
+    enum WhereStart {
+        HEADSTART, TAILSTART
+    };
+
     private Node<T> head, tail;
     private int size;
     private int modCount;
@@ -85,7 +89,6 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
     }
 
     @Override
-    // TODO: optimize by checking which end of the list to start
     public void add(int index, T element) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
@@ -97,20 +100,47 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         } else {
             Node<T> newNode = new Node<>(element);
             int currIndex = 0;
-            Node<T> currNode = head;
-            while (currNode != null) {
-                if (currIndex == index - 1) {
-                    Node<T> tempNext = currNode.getNextNode();
-                    currNode.setNextNode(newNode);
-                    newNode.setPrevNode(currNode);
-                    tempNext.setPrevNode(newNode);
-                    newNode.setNextNode(tempNext);
-                    size++;
-                    modCount++;
+            Node<T> currNode = null;
+            WhereStart startPosition = WhereStart.HEADSTART;
+            if (index > size / 2) {
+                startPosition = WhereStart.TAILSTART;
+            }
+            switch (startPosition) {
+                case HEADSTART:
+                    currNode = head;
+                    while (currNode != null) {
+                        if (currIndex == index - 1) {
+                            Node<T> tempNext = currNode.getNextNode();
+                            currNode.setNextNode(newNode);
+                            newNode.setPrevNode(currNode);
+                            tempNext.setPrevNode(newNode);
+                            newNode.setNextNode(tempNext);
+                            size++;
+                            modCount++;
+                            break;
+                        }
+                        currNode = currNode.getNextNode();
+                        currIndex++;
+                    }
                     break;
-                }
-                currNode = currNode.getNextNode();
-                currIndex++;
+                case TAILSTART:
+                    currNode = tail;
+                    currIndex = size - 1;
+                    while (currNode != null) {
+                        if (currIndex == index - 1) {
+                            Node<T> tempNext = currNode.getNextNode();
+                            currNode.setNextNode(newNode);
+                            newNode.setPrevNode(currNode);
+                            tempNext.setPrevNode(newNode);
+                            newNode.setNextNode(tempNext);
+                            size++;
+                            modCount++;
+                            break;
+                        }
+                        currNode = currNode.getPrevNode();
+                        currIndex--;
+                    }
+                    break;
             }
         }
     }
@@ -198,7 +228,6 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
     }
 
     @Override
-    // TODO: optimize index navigation
     public T remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
@@ -210,56 +239,122 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             returnValue = removeLast();
         } else {
             int currIndex = 0;
-            Node<T> currNode = head;
-            while (currNode != null) {
-                if (currIndex == index) {
-                    returnValue = currNode.getElement();
-                    Node<T> tempPrevNode = currNode.getPrevNode();
-                    Node<T> tempNextNode = currNode.getNextNode();
-                    currNode.setNextNode(null);
-                    currNode.setPrevNode(null);
-                    tempPrevNode.setNextNode(tempNextNode);
-                    tempNextNode.setPrevNode(tempPrevNode);
-                    size--;
-                    modCount++;
-                }
-                if (returnValue != null) {
-                    break;
-                }
-                currNode = currNode.getNextNode();
-                currIndex++;
+            Node<T> currNode = null;
+            WhereStart startPosition = WhereStart.HEADSTART;
+            if (index > size / 2) {
+                startPosition = WhereStart.TAILSTART;
             }
+            switch (startPosition) {
+                case HEADSTART:
+                    currNode = head;
+                    while (currNode != null) {
+                        if (currIndex == index) {
+                            returnValue = currNode.getElement();
+                            Node<T> tempPrevNode = currNode.getPrevNode();
+                            Node<T> tempNextNode = currNode.getNextNode();
+                            currNode.setNextNode(null);
+                            currNode.setPrevNode(null);
+                            tempPrevNode.setNextNode(tempNextNode);
+                            tempNextNode.setPrevNode(tempPrevNode);
+                            size--;
+                            modCount++;
+                        }
+                        if (returnValue != null) {
+                            break;
+                        }
+                        currNode = currNode.getNextNode();
+                        currIndex++;
+                    }
+                    break;
+                case TAILSTART:
+                    currNode = tail;
+                    currIndex = size - 1;
+                    while (currNode != null) {
+                        if (currIndex == index) {
+                            returnValue = currNode.getElement();
+                            Node<T> tempPrevNode = currNode.getPrevNode();
+                            Node<T> tempNextNode = currNode.getNextNode();
+                            currNode.setNextNode(null);
+                            currNode.setPrevNode(null);
+                            tempPrevNode.setNextNode(tempNextNode);
+                            tempNextNode.setPrevNode(tempPrevNode);
+                            size--;
+                            modCount++;
+                        }
+                        if (returnValue != null) {
+                            break;
+                        }
+                        currNode = currNode.getPrevNode();
+                        currIndex--;
+                    }
+                    break;
+            }
+
         }
         return returnValue;
     }
 
     @Override
-    // TODO: optimize index navigation
     public void set(int index, T element) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
+        WhereStart startPosition = WhereStart.HEADSTART;
+        if (index > size / 2) {
+            startPosition = WhereStart.TAILSTART;
+        }
         int currIndex = 0;
-        Node<T> currNode = head;
-        while (currIndex < index) {
-            currNode = currNode.getNextNode();
-            currIndex++;
+        Node<T> currNode = null;
+        switch (startPosition) {
+            case HEADSTART:
+                currIndex = 0;
+                currNode = head;
+                while (currIndex < index) {
+                    currNode = currNode.getNextNode();
+                    currIndex++;
+                }
+                break;
+            case TAILSTART:
+                currIndex = size - 1;
+                currNode = tail;
+                while (currIndex > index) {
+                    currNode = currNode.getPrevNode();
+                    currIndex--;
+                }
+                break;
         }
         currNode.setElement(element);
         modCount++;
     }
 
     @Override
-    // TODO: optimize by checking if index is in first half or second half of list
     public T get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
+        WhereStart startPosition = WhereStart.HEADSTART;
+        if (index > size / 2) {
+            startPosition = WhereStart.TAILSTART;
+        }
         int currIndex = 0;
-        Node<T> currNode = head;
-        while (currIndex < index) {
-            currNode = currNode.getNextNode();
-            currIndex++;
+        Node<T> currNode = null;
+        switch (startPosition) {
+            case HEADSTART:
+                currIndex = 0;
+                currNode = head;
+                while (currIndex < index) {
+                    currNode = currNode.getNextNode();
+                    currIndex++;
+                }
+                break;
+            case TAILSTART:
+                currIndex = size - 1;
+                currNode = tail;
+                while (currIndex > index) {
+                    currNode = currNode.getPrevNode();
+                    currIndex--;
+                }
+                break;
         }
         return currNode.getElement();
     }
@@ -340,9 +435,12 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
     public Iterator<T> iterator() {
         return new IUDoubleLinkedListListIterator();
     }
+
     /**
-     * Private inner class containing all of the functionality of a ListIterator compatible with
-     * a double linked list. This class also provides functionality for our basic iterator.
+     * Private inner class containing all of the functionality of a ListIterator
+     * compatible with
+     * a double linked list. This class also provides functionality for our basic
+     * iterator.
      * 
      */
     private class IUDoubleLinkedListListIterator implements ListIterator<T> {
@@ -364,14 +462,34 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             if (startingIndex < 0 || startingIndex > size) {
                 throw new IndexOutOfBoundsException();
             }
-            currLocation = head;
             lastReturnedNode = null;
             callsToRemoveOrAdd = 1;
             expectedModCount = modCount;
-            currIndex = 0;
-            while (currIndex < startingIndex) {
-                currLocation = currLocation.getNextNode();
-                currIndex++;
+            WhereStart startPosition = WhereStart.HEADSTART;
+            if (startingIndex > size / 2) {
+                startPosition = WhereStart.TAILSTART;
+            }
+            switch (startPosition) {
+                case HEADSTART:
+                    currLocation = head;
+                    currIndex = 0;
+                    while (currIndex < startingIndex) {
+                        currLocation = currLocation.getNextNode();
+                        currIndex++;
+                    }
+                    break;
+                case TAILSTART:
+                    currLocation = null;
+                    currIndex = size;
+                    while (currIndex > startingIndex) {
+                        if (currLocation == null) {
+                            currLocation = tail;
+                        } else {
+                            currLocation = currLocation.getPrevNode();
+                        }
+                        currIndex--;
+                    }
+                    break;
             }
         }
 
@@ -505,7 +623,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                 tempNextNode.setPrevNode(newNode);
                 size++;
                 modCount++;
-               
+
             }
             expectedModCount++;
             currIndex++;
