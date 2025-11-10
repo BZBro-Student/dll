@@ -258,10 +258,9 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                             tempNextNode.setPrevNode(tempPrevNode);
                             size--;
                             modCount++;
-                        }
-                        if (returnValue != null) {
                             break;
                         }
+
                         currNode = currNode.getNextNode();
                         currIndex++;
                     }
@@ -280,8 +279,6 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                             tempNextNode.setPrevNode(tempPrevNode);
                             size--;
                             modCount++;
-                        }
-                        if (returnValue != null) {
                             break;
                         }
                         currNode = currNode.getPrevNode();
@@ -542,7 +539,6 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
                 }
                 lastReturnedNode = currLocation;
                 returnValue = currLocation.getElement();
-                currLocation = lastReturnedNode;
                 callsToRemoveOrAdd = 0;
             } else {
                 throw new NoSuchElementException();
