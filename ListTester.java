@@ -435,6 +435,7 @@ public class ListTester {
 	private IndexedUnsortedList<Integer> A_ListIterSetB_B() {
 		IndexedUnsortedList<Integer> list = emptyList_addA_A();
 		ListIterator<Integer> listIterator = list.listIterator();
+		listIterator.next();
 		listIterator.set(ELEMENT_B);
 		return list;
 	}
