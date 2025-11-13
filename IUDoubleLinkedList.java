@@ -497,7 +497,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             lastReturnedNode = null;
             canRemoveOrAdd = false;
             expectedModCount = modCount;
-            // Initialize as headstart just in case something breaks the logic
+            // Initialize as headstart just in case something breaks the logic, it will work anyway.
             WhereStart startPosition = WhereStart.HEADSTART;
             if (startingIndex > size / 2) {
                 startPosition = WhereStart.TAILSTART;

@@ -20,7 +20,7 @@ INCLUDED FILES:
   IUArrayList.java - Contains an ArrayList implementation of IndexedUnsortedList, passes 2672/2672 possible tests.
   IUSingleLinkedList.java - Contains a Single Linked Node based implementation of IndexedUnsortedList, passes 2672/2672 possible tests.
   IUDoubleLinkedList.java - Contains a Double Linked Node based implementation of IndexedUnsortedList, passes 9724/9724 possible tests.
-  ListTester.java - Driver file for the program which tests the selected list implementation.
+  ListTester.java - Driver file for the program which tests the selected list implementation via change scenarios.
 
 
 COMPILING AND RUNNING:
@@ -69,10 +69,10 @@ were implemented due to the differening structures of each list type.
   The IUDOubleLinkedList is almost the exact same as the IUSingleLinkedList, but each node now holds a reference to the node before itself. The biggest improvement this allows 
   for is making removeLast() O(1) as the list now knows what the node before the tail is. This means that the previous node can just be made the tail and set the tails next node back 
   to null. The new reference increases memory usage in exchange for lowering the time complexity of the removeLast() method. This also allows for the use of a list iterator, 
-  which is an iterator that that has bi-directional movement. It also allows for extra functionality other than moving back and forth, it allow for adding and setting values and getter
+  which is an iterator that that has bi-directional movement. It also allows for extra functionality other than moving back and forth, it allows for adding and setting values and getter
   methods for getting the previous and next indexes. 
   Because of the possibility of navigating back from the tail or forward from the head navigation through the list can be reduced for indexed functions by deciding which side
-  of to start navigating from as starting at the tail for index 90 out of 100 will be significantly faster than navigating from the head.
+  to start navigating from as starting at the tail for index 90 out of 100 will be significantly faster than navigating from the head.
 
 Each list type has advantages and disadvantages due to their usage of memory and their methods' time complexity. Due to this not every list is useful for every purpose even if
 they are functionaly the same. A list that doesn't need to change will be better suited for an ArrayList while a list that needs to dynamically change will be better implemented 
